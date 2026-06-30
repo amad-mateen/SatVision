@@ -1,0 +1,53 @@
+# ==========================================
+# SatVision Unified GitIgnore
+# ==========================================
+
+# System / IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ==========================================
+# Frontend (React)
+# ==========================================
+frontend/node_modules/
+frontend/build/
+frontend/.vercel/
+frontend/.env*.local
+
+# ==========================================
+# Backend (Python / Flask / Machine Learning)
+# ==========================================
+
+# Virtual Environments & Cache
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/.pytest_cache/
+
+# Datasets & Large Training Files
+backend/WorldFloodsAsia/
+backend/downloaded_samples/
+backend/server_downloads/
+
+# Jupyter Notebook Checkpoints
+backend/*.ipynb
+backend/.ipynb_checkpoints/
+
+# Extra/Testing Scripts (Temporary local scripts)
+backend/15band.py
+backend/backend.py
+backend/inspect_tiff.py
+backend/kaggle.py
+backend/model.py
+backend/test*.py
+
+# Large Outputs / Media / Local CSVs
+backend/*.png
+backend/*.csv
