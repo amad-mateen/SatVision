@@ -20,7 +20,7 @@ from src.services import gemini as gemini_service
 from src.database.mongo import get_generations_collection
 
 
-def run_detection_pipeline(coords, target_date, apply_buffer=True, base_url="http://localhost:7860"):
+def run_detection_pipeline(coords, target_date, apply_buffer=True, base_url="http://localhost:5000"):
     """
     Insulated pipeline preventing concurrent leakages by running operations 
     inside runtime session directories and scaling resolution dynamically.

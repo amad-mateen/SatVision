@@ -787,4 +787,4 @@ def serve_mask(filename):
 
 if __name__ == '__main__':
     print("🚀 Flood Backend Running...", flush=True)
-    app.run(host="0.0.0.0", port=7860, threaded=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("FLASK_PORT", os.environ.get("PORT", 5000))), threaded=True)

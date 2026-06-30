@@ -13,7 +13,7 @@ MONGO_DB_NAME = "satvision_db"
 MONGO_COLLECTION_NAME = "generations"
 
 EE_CREDENTIALS_JSON = os.environ.get("EE_CREDENTIALS")
-EE_PROJECT_ID = "gen-lang-client-0114614261"
+EE_PROJECT_ID = os.environ.get("EE_PROJECT_ID", "gen-lang-client-0114614261")
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_MODEL_ID = "gemini-2.5-flash"
@@ -66,7 +66,7 @@ OVERLAY_FLOOD_COLOR_BGR = (0, 0, 255)
 OVERLAY_ALPHA = 180
 
 FLASK_HOST = "0.0.0.0"
-FLASK_PORT = int(os.environ.get("FLASK_PORT", 7860))
+FLASK_PORT = int(os.environ.get("FLASK_PORT", os.environ.get("PORT", 5000)))
 FLASK_THREADED = True
 
 def calculate_pixel_to_sq_km(scale_meters):
