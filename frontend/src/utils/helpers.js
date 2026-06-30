@@ -19,7 +19,7 @@ import { BACKEND_URL } from '../constants/events';
  *
  * @example
  * getSafeDownloadUrl('http://10.0.0.5/mask/report_2022-09-10.pdf')
- * // → 'http://localhost:5000/mask/report_2022-09-10.pdf'
+ * // → 'https://satvision-app.hf.space/mask/report_2022-09-10.pdf'
  */
 export const getSafeDownloadUrl = (url) => {
   if (!url) return '#';

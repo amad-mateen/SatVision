@@ -54,3 +54,7 @@ backend/test*.py
 # Large Outputs / Media / Local CSVs
 backend/*.png
 backend/*.csv
+
+# Old / Legacy copies
+frontend_old/
+

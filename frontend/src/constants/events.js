@@ -9,7 +9,7 @@ export const DEFAULT_ZOOM = 13.5;
  * Root URL for the backend inference server.
  * Update this to your current HuggingFace Space or deployment endpoint.
  */
-export const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+export const BACKEND_URL = 'https://satvision-app.hf.space';
 
 // ─────────────────────────────────────────────────────────────────
 // Featured Flood Events — Pre-loaded 10m Zoom Anchors
