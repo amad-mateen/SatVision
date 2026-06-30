@@ -31,6 +31,9 @@ backend/*.pyo
 backend/*.pyd
 backend/.pytest_cache/
 
+# Deployment & Temporary configs
+backend/requirements.txt
+
 # Datasets & Large Training Files
 backend/WorldFloodsAsia/
 backend/downloaded_samples/

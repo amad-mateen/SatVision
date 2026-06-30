@@ -2,6 +2,12 @@
 
 **SatVision** is a satellite image segmentation tool designed for **post-flood disaster assessment**. It integrates a machine learning backend with an interactive web frontend to detect, segment, and overlay flood water masks from Sentinel-2 satellite imagery in real-time.
 
+
+## 🔗 Live Deployments
+
+* **Frontend App:** [sat-vision.vercel.app](https://sat-vision.vercel.app)
+* **Backend API (Hugging Face Space):** [huggingface.co/spaces/SatVision/App](https://huggingface.co/spaces/SatVision/App)
+
 ---
 
 ## 📂 Project Structure
@@ -14,8 +20,7 @@ satvision/
 │   ├── models/               # Pre-trained ML model checkpoints (.ckpt)
 │   ├── src/                  # Inference logic, image fetching, and processing
 │   ├── main.py / server.py   # Flask API entrypoints
-│   ├── Dockerfile            # Container definition for deployment (e.g., Hugging Face Spaces)
-│   └── requirements.txt      # Python dependencies
+│   └── Dockerfile            # Container definition for deployment (e.g., Hugging Face Spaces)
 │
 ├── frontend/                 # React frontend (Leaflet mapping interface)
 │   ├── public/               # Public assets and index.html
@@ -25,7 +30,8 @@ satvision/
 │
 ├── .gitattributes            # Git LFS configurations for model checkpoints
 ├── .gitignore                # Project-wide Git exclusion rules
-└── README.md                 # Root documentation (this file)
+├── README.md                 # Root documentation (this file)
+└── requirements.txt          # Unified Python dependencies (root-level)
 ```
 
 ---
@@ -54,7 +60,7 @@ The backend manages data fetching from satellite providers (Copernicus / Sentine
    ```
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -r ../requirements.txt
    ```
 4. Run the backend server:
    ```bash
@@ -111,6 +117,24 @@ The React frontend communicates with the Flask backend to request flood masks fo
     "mask_url": "data:image/png;base64,..."
   }
   ```
+
+---
+
+## ☁️ Hugging Face Space Deployment
+
+The backend is configured to be deployed on Hugging Face Spaces using the Docker SDK. Since the project contains both a frontend and backend, when pushing updates to Hugging Face Spaces:
+
+1. Hugging Face Spaces expects all app code and configuration (including the `Dockerfile` and `requirements.txt`) to be present in the root directory of the Hugging Face repository.
+2. If you are using Git subtree or a deployment script to push only the `backend/` subdirectory to Hugging Face:
+   * **You must copy the root `requirements.txt` into the `backend/` folder prior to pushing**, so that the Docker image builds successfully on Hugging Face.
+   * Example script/command to prepare and deploy:
+     ```bash
+     # Copy requirements.txt to backend folder
+     cp requirements.txt backend/requirements.txt
+     
+     # Deploy using git subtree push (example)
+     git subtree push --prefix backend hf master
+     ```
 
 ---
 
