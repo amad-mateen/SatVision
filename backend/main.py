@@ -15,7 +15,7 @@ from src.app import create_app
 
 def main():
     """Main entry point for the backend server."""
-    print("🚀 SatVision Production Backend Running...", flush=True)
+    print("[SatVision] Production Backend Running...", flush=True)
     
     # Create application instance
     app = create_app()

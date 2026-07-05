@@ -29,7 +29,7 @@ def download_gee_tile(image, n, s, e, w, prefix, r, c, scale=10):
     try:
         resp = requests.get(url, timeout=config.GEE_REQUEST_TIMEOUT)
         if resp.status_code != 200:
-            print(f"❌ Tile {r}-{c} failed with status {resp.status_code}.", flush=True)
+            config.logger.warning(f"❌ Tile {r}-{c} failed with status {resp.status_code}.")
             return None
         
         path = os.path.join(config.DOWNLOADS_DIR, f"{prefix}_tile_{r}_{c}.tiff")
@@ -37,7 +37,7 @@ def download_gee_tile(image, n, s, e, w, prefix, r, c, scale=10):
             f.write(resp.content)
         return path
     except Exception as e:
-        print(f"❌ Tile download failed {r}-{c}: {e}", flush=True)
+        config.logger.error(f"❌ Tile download failed {r}-{c}: {e}")
         return None
 
 
@@ -170,7 +170,7 @@ def fetch_optical_composite(coords, time_interval, filename_prefix, scale=10):
         return save_path, actual_date, source_type, cloud_percent
     
     except Exception as e:
-        print(f"❌ GEE Optical Error {filename_prefix}: {e}", flush=True)
+        config.logger.error(f"❌ GEE Optical Error {filename_prefix}: {e}")
         return None, None, None, 100.0
 
 
@@ -239,7 +239,7 @@ def fetch_sar_data(coords, time_interval, filename_prefix, is_baseline=False, sc
         return save_path, actual_date, source_type
     
     except Exception as e:
-        print(f"❌ SAR Error {filename_prefix}: {e}", flush=True)
+        config.logger.error(f"❌ SAR Error {filename_prefix}: {e}")
         return None, None, None
 
 
@@ -298,5 +298,5 @@ def fetch_dynamic_world_baseline(coords, time_interval, filename_prefix, scale=1
         return save_path, "Dynamic Dry-Season Anchor (April-May)"
     
     except Exception as e:
-        print(f"❌ Dynamic World Error {filename_prefix}: {e}", flush=True)
+        config.logger.error(f"❌ Dynamic World Error {filename_prefix}: {e}")
         return None, None

@@ -200,7 +200,7 @@ def run_detection_pipeline(coords, target_date, apply_buffer=True, base_url="htt
         pdf.multi_cell(0, 6, text=safe_pdf_text)
         pdf.output(report_path)
     except Exception as pdf_err:
-        print(f"❌ PDF Engine Failed: {pdf_err}", flush=True)
+        config.logger.error(f"❌ PDF Engine Failed: {pdf_err}")
     
     yield emit_log(100, "✅ Detection Pipeline Complete!")
     
@@ -219,7 +219,7 @@ def run_detection_pipeline(coords, target_date, apply_buffer=True, base_url="htt
         try:
             generations_col.insert_one(generation_record)
         except Exception as db_err:
-            print(f"❌ DB Write Blocked: {db_err}", flush=True)
+            config.logger.error(f"❌ DB Write Blocked: {db_err}")
             
     # Sanitize URLs to point to unique session paths: e.g. base_url/mask/session_id/filename.png
     c_lat = f"{session_id}/{os.path.basename(raw_url_latest)}" if raw_url_latest else ""

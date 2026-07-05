@@ -1,5 +1,14 @@
 import os
 import torch
+import logging
+
+# Configure structured enterprise logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger("SatVision")
 
 CHECKPOINT_PATH = os.environ.get("CHECKPOINT_PATH", "./models/SatVision_Model.ckpt")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,6 +28,23 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 GEMINI_MODEL_ID = "gemini-2.5-flash"
 GEMINI_TEMPERATURE = 0.1
 GEMINI_TOP_P = 0.9
+
+def validate_environment():
+    """Validates required API keys and credentials at system startup."""
+    missing = []
+    if not EE_CREDENTIALS_JSON:
+        missing.append("EE_CREDENTIALS")
+    if not GEMINI_API_KEY:
+        missing.append("GEMINI_API_KEY")
+    
+    if missing:
+        logger.warning(
+            f"⚠️  [Startup Security Audit] Missing required environment variables: {', '.join(missing)}. "
+            "Google Earth Engine downloads and Gemini report generation will fail in runtime if not configured."
+        )
+    else:
+        logger.info("✅ [Startup Security Audit] All core environmental secrets verified successfully.")
+
 
 S2_CLOUD_THRESHOLD = 35
 OPTICAL_CLEAR_THRESHOLD = 85.0

@@ -87,5 +87,5 @@ Provide 3 highly specific, actionable recommendations for on-the-ground disaster
     
     except Exception as e:
         import traceback
-        print(f"❌ AI Report Error: {e}\n{traceback.format_exc()}", flush=True)
+        config.logger.error(f"❌ AI Report Error: {e}\n{traceback.format_exc()}")
         return "Error: AI Report generation failed due to an internal system error."

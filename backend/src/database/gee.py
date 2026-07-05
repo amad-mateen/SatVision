@@ -11,7 +11,7 @@ def initialize_earth_engine():
     """
     Initialize Earth Engine with service account credentials or local auth.
     """
-    print("🌍 Initializing Earth Engine...", flush=True)
+    config.logger.info("🌍 Initializing Earth Engine...")
     
     try:
         if config.EE_CREDENTIALS_JSON:
@@ -24,11 +24,11 @@ def initialize_earth_engine():
                 scopes=['https://www.googleapis.com/auth/earthengine']
             )
             ee.Initialize(credentials, project=config.EE_PROJECT_ID)
-            print("✅ Earth Engine Linked via Service Account.", flush=True)
+            config.logger.info("✅ Earth Engine Linked via Service Account.")
         else:
             # Use local authentication (cached credentials)
             ee.Initialize(project=config.EE_PROJECT_ID)
-            print("✅ Earth Engine Linked via Local Auth.", flush=True)
+            config.logger.info("✅ Earth Engine Linked via Local Auth.")
     except Exception as e:
-        print(f"❌ Earth Engine Init Failed: {e}", flush=True)
+        config.logger.error(f"❌ Earth Engine Init Failed: {e}")
         raise

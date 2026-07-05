@@ -52,10 +52,10 @@ def initialize_model():
     """
     global _model
     
-    print("⏳ Loading model...", flush=True)
+    config.logger.info("⏳ Loading model...")
     
     if not os.path.exists(config.CHECKPOINT_PATH):
-        print(f"❌ Model Checkpoint Not Found: {config.CHECKPOINT_PATH}", flush=True)
+        config.logger.error(f"❌ Model Checkpoint Not Found: {config.CHECKPOINT_PATH}")
         _model = None
         return None
     
@@ -66,10 +66,10 @@ def initialize_model():
         )
         _model.to(config.DEVICE)
         _model.eval()
-        print("✅ Model Loaded Successfully!", flush=True)
+        config.logger.info("✅ Model Loaded Successfully!")
         return _model
     except Exception as e:
-        print(f"❌ Model Load Failed: {e}", flush=True)
+        config.logger.error(f"❌ Model Load Failed: {e}")
         _model = None
         return None
 

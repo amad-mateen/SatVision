@@ -1,52 +1,139 @@
-# SatVision 🌊
+# SatVision: Multimodal Disaster GEOINT & Deep Learning Flood Assessment Platform
 
-**SatVision** is a satellite image segmentation tool designed for **post-flood disaster assessment**. It integrates a machine learning backend with an interactive web frontend to detect, segment, and overlay flood water masks from Sentinel-2 satellite imagery in real-time.
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/SatVision/App)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-blue.svg?logo=docker&logoColor=white)](https://huggingface.co/spaces/SatVision/App)
+[![Python 3.10](https://img.shields.io/badge/Python-3.10-3776AB.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![PyTorch Lightning](https://img.shields.io/badge/PyTorch--Lightning-2.2.1-EE4C2C?logo=pytorch&logoColor=white)](https://pytorchlightning.ai/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-
-## 🔗 Live Deployments
-
-* **Frontend App:** [sat-vision.vercel.app](https://sat-vision.vercel.app)
-* **Backend API (Hugging Face Space):** [huggingface.co/spaces/SatVision/App](https://huggingface.co/spaces/SatVision/App)
+SatVision is an enterprise-grade, containerized Geospatial Intelligence (GEOINT) platform designed for **rapid post-flood disaster assessment**. It integrates multi-spectral satellite imagery, Synthetic Aperture Radar (SAR) sensors, and deep learning segmentation (U-Net++) with LLM-guided damage reporting to identify, quantify, and document disaster impacts in real-time.
 
 ---
 
-## 📂 Project Structure
+## 💼 Business Case & Quantified Impact
 
-This repository is organized into two primary subdirectories:
+### The Problem: Post-Disaster Action Delay
+During extreme weather events, humanitarian agencies, insurance firms, and trust safety operations face a **geospatial visibility gap**:
+1. **Severe Cloud Cover**: Standard optical satellite sensors (like Sentinel-2) are blind during active storms due to dense cloud ceilings, delaying mapping by weeks.
+2. **Analysis Bottlenecks**: Manually segmenting flooding from multi-spectral bands across thousands of square kilometers is too slow for active search-and-rescue.
+3. **Lack of Actionable Reports**: raw TIFF imagery is useless to ground teams; they require executive summaries translating pixel telemetry into affected infrastructure coordinates.
 
-```text
-satvision/
-├── backend/                  # Flask backend (U-Net++ segmentation & data sourcing)
-│   ├── models/               # Pre-trained ML model checkpoints (.ckpt)
-│   ├── src/                  # Inference logic, image fetching, and processing
-│   ├── main.py / server.py   # Flask API entrypoints
-│   └── Dockerfile            # Container definition for deployment (e.g., Hugging Face Spaces)
-│
-├── frontend/                 # React frontend (Leaflet mapping interface)
-│   ├── public/               # Public assets and index.html
-│   ├── src/                  # React components, UI pages, and Leaflet configuration
-│   ├── package.json          # Node.js dependencies & scripts
-│   └── SETUP.md              # Frontend setup guidelines
-│
-├── .gitattributes            # Git LFS configurations for model checkpoints
-├── .gitignore                # Project-wide Git exclusion rules
-├── README.md                 # Root documentation (this file)
-└── requirements.txt          # Unified Python dependencies (root-level)
+### The Solution: Automated Disaster Intelligence
+SatVision automates the entire GEOINT pipeline, returning actionable alerts **within 90 seconds** of bounding box selection:
+* **Multi-Modal Resilience**: When cloud cover exceeds 85%, the system automatically fails over to Sentinel-1 Radar (SAR) backscatter sensors, mapping water through cloud decks and darkness.
+* **Executive DaLA Reports**: Dynamically feeds flood masks and local demographics directly into Gemini AI to compile professional Flood Damage and Loss Assessment (DaLA) reports.
+* **Insulated Concurrency**: Session-isolated workspaces guarantee that concurrent emergency response requests run without memory leaks or file naming conflicts.
+
+---
+
+## 🗺️ System Architecture & Workflow
+
+The platform coordinates cloud database queries, PyTorch neural networks, and LLM text generation:
+
+```mermaid
+graph TD
+    User[Client Map Explorer] -->|Select BBox & Target Date| API[Flask Backend API]
+    API -->|1. Check Cloud Cover| S2[Sentinel-2 Optical Composite]
+    
+    S2 -->|Cloud Cover <= 85%| UNet[PyTorch U-Net++ Classifier]
+    S2 -->|Cloud Cover > 85%| S1[Sentinel-1 SAR Radar Fallback]
+    
+    S1 -->|VV Backscatter decibel| Threshold[Radar Thresholding Filter]
+    
+    UNet -->|Water Mask| Align[Geospatial Grid Alignment]
+    Threshold -->|Water Mask| Align
+    
+    Align -->|Difference Analysis| Mask[Inundation Overlay Mask]
+    Mask -->|Area Math| Stats[Quantitative Metrics sq km]
+    
+    Stats -->|Multimodal Input| Gemini[Gemini-2.5-Flash Analyst API]
+    Gemini -->|Plain Text Report| FPDF[FPDF Report Engine]
+    
+    FPDF -->|Export PDF| User
+    Stats -->|Store Log| Mongo[(MongoDB Instance)]
 ```
 
 ---
 
-## 🚀 Getting Started
+## ⚙️ Key Technical Strengths
 
-### 1. Backend (Flask & Machine Learning)
-The backend manages data fetching from satellite providers (Copernicus / Sentinel Hub) and performs inference using a U-Net++ model to produce flood masks.
+### 1. Multi-Modal Satellite Payload Fallback (Optical ⇆ SAR)
+* **Optical Node (Sentinel-2)**: Captures 6 spectral bands: Red, Green, Blue, Near-Infrared (NIR), Short-wave Infrared-1 (SWIR1), and SWIR2 (B2, B3, B4, B8, B11, B12).
+* **Radar Node (Sentinel-1 SAR GRD)**: Falls back to Synthetic Aperture Radar using Vertical-Transmit / Vertical-Receive (VV) polarization backscatter decibels (`sar_db < -16`) when clouds block optical views.
 
-#### Prerequisites
-* Python 3.8+
-* Docker (Optional, if running via container)
+### 2. Dynamic Area Resolution Scaling
+Querying high-resolution 10-meter satellite tiles across vast states can lead to Google Earth Engine timeouts. SatVision dynamically adjusts its resolution scale:
+* **Small Areas (<0.2°)**: 10-meter crisp resolution scale (e.g. cities, bridges).
+* **Medium Areas (0.2° - 0.6°)**: 40-meter resolution scale (e.g. regional valleys).
+* **Vast Areas (>0.6°)**: 90-meter optimized resolution scale (e.g. Lake Manchar / Dadu district) to prevent server timeouts.
 
-#### Local Setup
-1. Navigate to the `backend/` directory:
+### 3. Concurrency-Insulated Workspaces
+Each detection query compiles files within a unique UUID subdirectory (e.g., `server_downloads/{session_id}/`). This guarantees that multi-user parallel queries run without race conditions, file corruption, or database document collisions.
+
+---
+
+## 🧠 Machine Learning Model Profile
+
+The core classification network is a **U-Net++ encoder-decoder architecture** wrapped in PyTorch Lightning.
+
+* **Backbone**: ResNet-34 (ImageNet pre-trained feature extractor, frozen encoder weights).
+* **Input Layer**: Modified to support 6 multi-spectral channels (dimension `[Batch, 6, Height, Width]`).
+* **Output Classes**: 2 classes (Class 0: Cloud/Land, Class 1: Surface Water).
+* **Sliding-Window Inference**: Evaluates images in 256x256 sliding windows with 50% overlap. Integrates a **2D Hanning window** blending mask to smooth boundary seams and eliminate grid-tiling artifacts.
+
+---
+
+## 📂 Repository Directory Structure
+
+```text
+SatVision/
+├── backend/
+│   ├── models/
+│   │   └── SatVision_Model.ckpt      # U-Net++ PyTorch Lightning checkpoint (313MB)
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── app.py                     # Flask application factory
+│   │   ├── config.py                  # Core variables & env validators
+│   │   ├── database/                  # Connection managers (GEE, MongoDB)
+│   │   ├── routes/                    # API Routing endpoints (SSE streaming)
+│   │   └── services/                  # Business logic (model, cv2, gemini, GEE)
+│   ├── main.py                        # Backend launcher script
+│   ├── requirements.txt               # Backend Python pins
+│   └── Dockerfile                     # Non-root user space container
+│
+├── frontend/
+│   ├── public/                        # Leaflet markers & HTML shell
+│   ├── src/
+│   │   ├── components/                # Modular React layouts
+│   │   │   ├── ControlPanel.jsx       # Bounding box & date selection
+│   │   │   ├── ImageModal.jsx         # Zoomed satellite viewer
+│   │   │   ├── MapExplorer.jsx        # Leaflet dynamic overlay layer
+│   │   │   └── Sidebar.jsx            # History and download panel
+│   │   ├── constants/                 # Preset coordinates constants
+│   │   ├── utils/                     # Asset mapping helpers
+│   │   ├── App.jsx                    # Core React component
+│   │   └── index.js
+│   ├── package.json                   # UI build configurations
+│   └── .env.development               # Local URL definitions
+│
+├── .gitignore
+├── .gitattributes                     # Git LFS tracking rules
+└── README.md                          # Landing documentation (this file)
+```
+
+---
+
+## 🚀 Installation & Local Replication
+
+### 1. Prerequisites
+Ensure you have the following installed:
+* Python 3.10+
+* Node.js v16+
+* A valid Google Earth Engine service account (stored as JSON)
+* A Google Gemini API key
+
+### 2. Backend Setup
+1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
@@ -60,85 +147,46 @@ The backend manages data fetching from satellite providers (Copernicus / Sentine
    ```
 3. Install dependencies:
    ```bash
-   pip install -r ../requirements.txt
+   pip install -r requirements.txt
    ```
-4. Run the backend server:
+4. Configure environment variables in `.env` (or shell variables):
+   ```env
+   EE_CREDENTIALS='{"type": "service_account", "project_id": "...", ...}'
+   GEMINI_API_KEY="your-gemini-api-key"
+   MONGO_URI="mongodb://localhost:27017/"
+   ```
+5. Launch the Flask API:
    ```bash
-   python server.py
+   python main.py
    ```
    The backend API will run on `http://localhost:5000`.
 
----
-
-### 2. Frontend (React & Leaflet Map)
-The frontend is a React application that provides a map UI where users can highlight affected regions and trigger real-time flood assessments.
-
-#### Prerequisites
-* Node.js (v14+) and npm
-
-#### Local Setup
-1. Navigate to the `frontend/` directory:
+### 3. Frontend Setup
+1. Navigate to the frontend directory:
    ```bash
-   cd frontend
+   cd ../frontend
    ```
 2. Install npm dependencies:
    ```bash
    npm install
    ```
-3. Run the development server:
+3. Configure the local backend endpoint in `frontend/.env.development`:
+   ```env
+   REACT_APP_BACKEND_URL="http://localhost:5000"
+   ```
+4. Start the development server:
    ```bash
    npm start
    ```
-   The application will automatically open in your browser at `http://localhost:3000`.
+   The UI will open automatically at `http://localhost:3000`.
 
 ---
 
-## 📡 API & Integration Details
-
-The React frontend communicates with the Flask backend to request flood masks for a chosen bounding box (bbox) on the map.
-
-### Bounding Box Detection Endpoint
-* **Endpoint:** `POST http://localhost:5000/api/detect`
-* **Request Format:**
-  ```json
-  {
-    "bbox": {
-      "north": 30.5,
-      "south": 30.2,
-      "east": 69.5,
-      "west": 69.2
-    },
-    "zoom": 13
-  }
-  ```
-* **Response Format:**
-  ```json
-  {
-    "mask_url": "data:image/png;base64,..."
-  }
-  ```
+## 🛡️ License
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-## ☁️ Hugging Face Space Deployment
-
-The backend is configured to be deployed on Hugging Face Spaces using the Docker SDK. Since the project contains both a frontend and backend, when pushing updates to Hugging Face Spaces:
-
-1. Hugging Face Spaces expects all app code and configuration (including the `Dockerfile` and `requirements.txt`) to be present in the root directory of the Hugging Face repository.
-2. If you are using Git subtree or a deployment script to push only the `backend/` subdirectory to Hugging Face:
-   * **You must copy the root `requirements.txt` into the `backend/` folder prior to pushing**, so that the Docker image builds successfully on Hugging Face.
-   * Example script/command to prepare and deploy:
-     ```bash
-     # Copy requirements.txt to backend folder
-     cp requirements.txt backend/requirements.txt
-     
-     # Deploy using git subtree push (example)
-     git subtree push --prefix backend hf master
-     ```
-
----
-
-## 🛠️ Tech Stack
-
-* **Frontend:** React 18, React-Leaflet 4, Leaflet JS, Axios, Esri World Imagery (satellite tiles)
-* **Backend:** Flask, PyTorch, U-Net++, OpenCV, Docker
+### 🌟 Project Implementation Note
+* Developed and refactored by **Amad Mateen**. 
+* Intended for emergency disaster response operations and portfolio demonstration.

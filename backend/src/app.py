@@ -20,6 +20,9 @@ def create_app():
     """
     app = Flask(__name__)
     
+    # Run dynamic environment sanity validation
+    config.validate_environment()
+    
     # ========================================================================
     # CONFIGURATION
     # ========================================================================
@@ -36,7 +39,7 @@ def create_app():
     try:
         gee_service.initialize_earth_engine()
     except Exception as e:
-        print(f"⚠️  Earth Engine initialization warning: {e}", flush=True)
+        config.logger.warning(f"⚠️ Earth Engine initialization warning: {e}")
     
     # ========================================================================
     # INITIALIZATION: MONGODB

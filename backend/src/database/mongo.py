@@ -19,7 +19,7 @@ def initialize_mongodb():
     global _mongo_client, _db, _generations_col
     
     if config.MONGO_URI is None:
-        print("⚠️  MongoDB URI not configured (MONGO_URI env var missing)", flush=True)
+        config.logger.warning("⚠️  MongoDB URI not configured (MONGO_URI env var missing)")
         return None, None
     
     try:
@@ -29,10 +29,10 @@ def initialize_mongodb():
         
         # Verify connection
         _mongo_client.admin.command('ping')
-        print("✅ MongoDB Connected Successfully!", flush=True)
+        config.logger.info("✅ MongoDB Connected Successfully!")
         return _db, _generations_col
     except Exception as e:
-        print(f"❌ MongoDB Connection Failed: {e}", flush=True)
+        config.logger.error(f"❌ MongoDB Connection Failed: {e}")
         _mongo_client = None
         _db = None
         _generations_col = None
@@ -54,4 +54,4 @@ def close_mongodb():
     global _mongo_client
     if _mongo_client:
         _mongo_client.close()
-        print("✅ MongoDB connection closed", flush=True)
+        config.logger.info("✅ MongoDB connection closed")
