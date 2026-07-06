@@ -33,7 +33,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # 7. Copy the rest of the application files with user permissions
-COPY --chown=user backend/ /app/
+COPY --chown=user . /app/
 
 # Expose standard routing port mapping interface
 EXPOSE 7860
