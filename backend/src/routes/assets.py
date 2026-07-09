@@ -28,7 +28,7 @@ def serve_mask(filename):
         safe_path = os.path.join(config.DOWNLOADS_DIR, filename)
         
     if not os.path.exists(safe_path):
-        print(f"❌ Asset Serving Failed: File not found at path {safe_path}", flush=True)
+        config.logger.warning(f"Asset Serving Failed: File not found at path {safe_path}")
         abort(404)
         
     return send_from_directory(
