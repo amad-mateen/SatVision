@@ -28,6 +28,7 @@ COPY --chown=user requirements.txt /app/
 # 6. Switch to the Hugging Face user safely now that permissions are locked down
 USER user
 ENV PATH="/home/user/.local/bin:$PATH"
+ENV FLASK_PORT=7860
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
