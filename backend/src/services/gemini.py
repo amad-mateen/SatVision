@@ -88,4 +88,6 @@ Provide 3 highly specific, actionable recommendations for on-the-ground disaster
     except Exception as e:
         import traceback
         config.logger.error(f"❌ AI Report Error: {e}\n{traceback.format_exc()}")
+        if "503" in str(e) or "demand" in str(e).lower():
+            return "AI Report generation is temporarily unavailable due to high demand on Google's Gemini API servers. Please try again in a few moments."
         return "Error: AI Report generation failed due to an internal system error."
